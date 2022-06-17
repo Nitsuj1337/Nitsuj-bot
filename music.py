@@ -114,7 +114,7 @@ class music(commands.Cog):
         return await ctx.send("Je ne suis pas dans un salon vocal.")
       ctx.voice_client.source.volume = volume / 100
       await ctx.send(f"Volume changé à {volume}%")
-      
+
     @commands.command(help='Met en pause la musique.')
     async def pause(self, ctx):
       if ctx.voice_client is None:

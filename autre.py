@@ -16,7 +16,7 @@ class autre(commands.Cog):
       embed.add_field(name="Rappel "+str((index)) + " : ", value= value[1], inline=False)
       print(value)
     await ctx.reply(embed=embed)
-    
+
   @commands.command(name="rappel", help="ajouter un rappel pour quelqu'un")
   async def _rappel(self, ctx, user : discord.Member, *rappel):
     rappel = " ".join(map(str, rappel))
