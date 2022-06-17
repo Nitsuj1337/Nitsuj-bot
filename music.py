@@ -19,28 +19,39 @@ YDL_OPTIONS = {
 }
 
 class music(commands.Cog):
-    def __init__(self, client):   
+    def __init__(self, client):
       self.client = client
       self.queue = {}
       self.playing = []
 
-    def check_queue(self,ctx,id):
-      if self.queue[id][1] != []:
+    def check_queue(self,ctx,guild_id):
+      if self.queue[guild_id][1] != []:
         voice = ctx.guild.voice_client
-        print(self.queue[id])
-        source = self.queue[id][1]
-        if len(self.queue[id]) == 1:
-          self.queue[id][1] = []
+        print(self.queue[guild_id])
+        source = self.queue[guild_id][1]
+        if len(self.queue[guild_id]) == 1:
+          self.queue[guild_id][1] = []
+        elif len(self.queue[guild_id]) == 2:
+            self.queue[guild_id][1] = self.queue[guild_id][2]
+            self.queue[guild_id][2] = []
         else:
-          for i in range(2,len(self.queue[id])):
-            self.queue[id][i-1] = self.queue[id][i]
-            self.queue[id][i] = []
-        print(self.queue[id])
-        voice.play(source[0], after=lambda x=0: self.check_queue(ctx,id))
+          for index,music in enumerate(self.queue[guild_id],start=2):
+            if music == []:
+              break
+            self.queue[guild_id][index-1] = self.queue[guild_id][index]
+            self.queue[guild_id][index] = []
+        print(self.queue[guild_id])
+        voice.play(source[0], after=lambda x=0: self.check_queue(ctx,guild_id))
         self.playing = [source[1],source[2]]
-      else:
-        self.playing = []
-    
+        return
+      '''if self.queue[guild_id][1] == [] and self.queue[guild_id][2] != None or self.queue[guild_id][1] == [] and self.queue[guild_id][2] != [] :
+        for info,i in range(2,len(self.queue[guild_id])):
+          self.queue[guild_id][i-1] = self.queue[guild_id][i]
+          self.queue[guild_id][i] = []
+        return'''
+      self.playing = []
+      return
+
     @commands.command(help='Rejoins le salon.')
     async def join(self, ctx):
       if ctx.author.voice is None:
@@ -65,7 +76,7 @@ class music(commands.Cog):
       if ctx.author.voice is None:
         return await ctx.send("Vous n'êtes pas dans un salon vocal.")
       voice_channel = ctx.author.voice.channel
-      if ctx.voice_client is None:    
+      if ctx.voice_client is None:
         await voice_channel.connect()
       if ctx.author.voice.channel != ctx.voice_client.channel:
         await ctx.voice_client.move_to(voice_channel)
@@ -87,7 +98,9 @@ class music(commands.Cog):
             self.queue[guild_id] = {1 : [source,title,uploader]}
             print(self.queue)
           else:
-            self.queue[guild_id][len(self.queue[guild_id])+1] = [source,title,uploader]
+            for index,music in enumerate(self.queue[guild_id].values(),start=1):
+              if music == [] :
+                self.queue[guild_id][index] = [source,title,uploader]
             print(self.queue)
           return await ctx.send(f"{title} de {uploader} est ajouté a la queue.")
         vc.play(source, after=lambda x=0: self.check_queue(ctx, ctx.message.guild.id))
@@ -132,7 +145,7 @@ class music(commands.Cog):
         return await ctx.send("Il n'y a pas de musique en cours.")
       return await ctx.send(f"La musique en cours est '{self.playing[0]}' de '{self.playing[1]}'")
 
-    @commands.command(name="queue",help="Montre les musiques dans la queue",aliases=["q"])
+    @commands.command(help="Montre les musiques dans la queue",aliases=["q"])
     async def queue(self,ctx):
       if(ctx.message.guild.id not in self.queue):
         return await ctx.reply("Il n'y a pas de musique dans la queue.")

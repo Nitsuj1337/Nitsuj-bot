@@ -12,8 +12,8 @@ intents.messages = True
 
 client = commands.Bot(command_prefix="?",intents = intents)
 
-for i in range(len(cogs)):
-    cogs[i].setup(client)
+for cog in cogs:
+    cog.setup(client)
 
 @client.event
 async def on_ready():
