@@ -27,7 +27,6 @@ class autre(commands.Cog):
       self.rappels[user.id][len(self.rappels[user.id])+1] = rappel
       print(self.rappels)
     await ctx.reply('Fait.')
-    
 
 def setup(client):
   client.add_cog(autre(client))
