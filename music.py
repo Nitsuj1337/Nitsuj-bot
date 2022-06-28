@@ -52,8 +52,8 @@ class music(commands.Cog):
       self.playing = []
       return
 
-    @commands.command(help='Rejoins le salon.')
-    async def join(self, ctx):
+    @commands.command(name="join",help='Rejoins le salon.')
+    async def join_voc(self, ctx):
       if ctx.author.voice is None:
         return await ctx.send("Vous n'êtes pas dans un salon vocal.")
       voice_channel = ctx.author.voice.channel
@@ -73,7 +73,7 @@ class music(commands.Cog):
     @commands.command(help="Jouer une musique (titre/lien), ?p marche aussi.",aliases=['p'])
     async def play(self, ctx, *url):
       url = " ".join(map(str, url))
-      await self.join(self,ctx)
+      await self.join_voc(ctx)
       vc = ctx.voice_client
       with yt_dlp.YoutubeDL(YDL_OPTIONS) as ydl:
         info = ydl.extract_info(url, download=False)
