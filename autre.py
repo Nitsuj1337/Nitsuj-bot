@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands
 
 class autre(commands.Cog):
+  '''All the command for other stuff (rn reminder)'''
   def __init__(self, client):
     self.client = client
     self.rappels={}
