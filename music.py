@@ -19,7 +19,9 @@ YDL_OPTIONS = {
 }
 
 class music(commands.Cog):
+
     '''All the command for music'''
+
     def __init__(self, client):
       self.client = client
       self.queue = {}
